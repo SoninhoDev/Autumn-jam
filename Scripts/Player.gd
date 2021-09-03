@@ -23,12 +23,16 @@ var time:float = 0
 signal Rewind(rewind,time)
 var frame:int
 
+#SHOOTING VARIABLES
+export var beam:PackedScene
+var mana:float
 
 #MAIN PHYSICS PROCESS FUNCTION-------------------------------------------------
 func _physics_process(delta):
 	
 	time += delta
 	frame += 1
+	mana += delta
 	
 	#MOVE HORIZONTALLY
 	if Input.is_action_pressed("ui_left"):
@@ -98,6 +102,9 @@ func animate():
 		animation_tree.set("parameters/Attack/blend_position",attack_direction)
 		animation_tree.set("parameters/Idle/blend_position",attack_direction)
 		animation_node.travel("Attack")
+		if mana >= 1:
+			shoot(0)
+		mana = 0
 		is_attacking=false
 
 
@@ -107,6 +114,11 @@ func flip_sprites(value):
 	$AttackSprites.flip_h=value
 	$WalkSprites.flip_h=value
 
-
+#SHOOTTING ENERGY BEAMS
+func shoot(rot:float):
+	var Beam := beam.instance()
+	Beam.rotation = cast.rotation + deg2rad(rot)
+	add_child(Beam)
+	pass
 
 
